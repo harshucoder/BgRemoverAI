@@ -22,7 +22,8 @@ export default function ImageProcessor() {
   const [error, setError] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
   const downloadRef = useRef<HTMLAnchorElement>(null);
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL; 
+  const API_URL =
+    process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/removebg"; // Fallback URL
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
     if (!file) return;
@@ -61,7 +62,7 @@ export default function ImageProcessor() {
 
     try {
       const response = await axios.post(
-        `${apiUrl}`, // Use the environment variable for the API URL
+        `${API_URL}`, // Use the environment variable for the API URL
         formData,
         {
           responseType: "blob",
@@ -82,8 +83,11 @@ export default function ImageProcessor() {
       const processedUrl = URL.createObjectURL(response.data);
       setProcessedImage(processedUrl);
       setProgress(100);
-    } catch (err: any) {
-      setError(err.response?.data?.error || "Error processing image");
+    } catch (err: unknown) {
+      const errorMessage = axios.isAxiosError(err)
+        ? err.response?.data?.error || "Error processing image"
+        : "Error processing image";
+      setError(errorMessage);
       console.error("Processing error:", err);
     } finally {
       setIsLoading(false);
@@ -199,10 +203,12 @@ export default function ImageProcessor() {
                   <div className="h-80 bg-gray-50 rounded-lg overflow-hidden border border-gray-200 flex items-center justify-center relative">
                     {processedImage ? (
                       <>
-                        <img
+                        <Image
                           src={processedImage}
                           alt="Processed result"
                           className="object-contain max-h-full max-w-full"
+                          width={500}
+                          height={500}
                         />
                         <div className="absolute top-2 left-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
                           Result
