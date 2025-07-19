@@ -6,7 +6,7 @@ const app = express();
 const PORT = 5000;
 const allowedOrigins = [
   "http://localhost:3000",
-  "http://https://bg-remover-ai-ten.vercel.app/",
+  "https://bg-remover-ai-ten.vercel.app/",
 ];
 app.use((req, res, next) => {
   console.log(`Request URL: ${req.method} ${req.url}`);
