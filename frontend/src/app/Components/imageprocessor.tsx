@@ -22,7 +22,7 @@ export default function ImageProcessor() {
   const [error, setError] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
   const downloadRef = useRef<HTMLAnchorElement>(null);
-
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL; 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
     if (!file) return;
@@ -61,7 +61,7 @@ export default function ImageProcessor() {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/removebg",
+        `${apiUrl}`, // Use the environment variable for the API URL
         formData,
         {
           responseType: "blob",
@@ -187,6 +187,7 @@ export default function ImageProcessor() {
                       alt="Result"
                       width={500}
                       height={500}
+                      className="object-contain max-h-full max-w-full"
                     />
                     <div className="absolute top-2 left-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
                       Original
