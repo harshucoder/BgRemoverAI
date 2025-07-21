@@ -1,2 +1,3 @@
 #!/usr/bin/env bash
-pip install rembg
+pip install --upgrade pip
+pip install rembg onnxruntime
